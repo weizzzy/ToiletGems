@@ -1,0 +1,45 @@
+local gemsLabel = game:GetService("Players").LocalPlayer.PlayerGui.Lobby.CurrenciesFrame.GemAmount.CurrencyLayout.AmountLabel
+
+
+local function addRandomGems()
+    local randomGems = math.random(1, 50) 
+    local currentGems = tonumber(gemsLabel.Text) or 0 
+    gemsLabel.Text = tostring(currentGems + randomGems) 
+end
+
+local function teleportRandomlyInPartZone(part)
+    local zoneSize = part.Size * 2
+    local newPosition = part.Position + Vector3.new(math.random(-zoneSize.X/2, zoneSize.X/2), 0, math.random(-zoneSize.Z/2, zoneSize.Z/2)) 
+    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(newPosition)) 
+end
+
+local function createPartAbovePlayer()
+    local character = game.Players.LocalPlayer.Character
+    if character then
+        local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+        if humanoidRootPart then
+            local part = Instance.new("Part")
+            part.Size = Vector3.new(50, 5, 50) 
+            part.Position = humanoidRootPart.Position + Vector3.new(0, 30, 0) -- 
+            part.Anchored = true
+            part.Parent = game.Workspace 
+            return part
+        end
+    end
+    return nil
+end
+
+
+while true do
+    addRandomGems()
+    wait(0.5)
+    local part = createPartAbovePlayer() 
+    if part then
+        for i = 1, 50 do
+            teleportRandomlyInPartZone(part) 
+        end
+        part:Destroy() 
+    else
+        warn("не создался парт")
+    end
+end
